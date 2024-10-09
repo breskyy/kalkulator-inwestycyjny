@@ -1,0 +1,39 @@
+body {
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.form-row label {
+    flex-basis: 40%; /* Procent szerokości na etykietę */
+    text-align: left;
+}
+
+.form-row input {
+    flex-basis: 50%; /* Procent szerokości na pole formularza */
+    text-align: left;
+    height: 30px;
+}
+
+.form-row select {
+    flex-basis: 50%; /* Procent szerokości na pole formularza */
+    text-align: left;
+    height: 30px;
+}
+
+p {
+    flex-basis: 10%; /* Procent szerokości na pole formularza */
+    height: 30px;
+}
+
+.options-container {
+    flex-basis: 40%; /* Procent szerokości na pole formularza */
+    max-width: 450px;
+    margin: 0 auto;
+}
