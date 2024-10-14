@@ -1,1 +1,1 @@
-iNVESTMENT CALCULATOR
+iNVESTMENT CALCULATOR for Divident profit calculations
