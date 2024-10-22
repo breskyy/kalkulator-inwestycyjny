@@ -88,5 +88,24 @@
         <label for="javascript">Rocznie</label>
       </div>
     </section>
+
+    <script>
+      let kwotaPocz = 0;
+      let kwotaReg = 300;
+
+      let procentDyw = 0.01;
+
+      let okres = 12;
+      let kapitalizacja = 1;
+
+      let dywidenda;
+
+      for (i=0; i<=okres; i++) {
+        let dywidenda = kwotaPocz + (kwotaReg*okres) + (kwotaReg*procentDyw)*okres;
+      }
+
+      console.log("sieaaa");
+    </script>
+
   </body>
 </html>
