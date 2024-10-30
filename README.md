@@ -1,4 +1,4 @@
-# Investment Calculator and Dividend Income Predictor
+tak# Investment Calculator and Dividend Income Predictor
 
 This is a web-based investment calculator designed to help users predict future dividend yields and visualize the potential growth of their income from stocks over time.
 
