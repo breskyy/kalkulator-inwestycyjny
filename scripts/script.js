@@ -346,7 +346,7 @@ for(i=1; i<=30; i++) {
 								
 								portfel_dywidend += dywidenda;
 								zarobek_z_dywidend += (ilosc_posiadanych_akcji * dywidenda);
->>>>>>> 0d8ac8673f11c2a245f8d20e748d864f4c12ff84
+								
 
 //         console.log("Rok: "+rok+", Miesiąc: "+miesiac);
 //         console.log("Nazwa spółki: "+nazwa_spolki)
