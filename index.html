@@ -1,124 +1,107 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Investment calc</title>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Inwestycji i Dywidend</title>
     <link rel="stylesheet" href="css/style.css" />
     <script src="scripts/script.js"></script>
-  </head>
-  <body>
-    <section>
-      <h1>Kalkulator inwestycyjny</h1>
-      <div class="options-container">
-        <div class="form-row">
-          <label for="down_payment">Kwota początkowa (zadatek):</label>
-          <input
-            type="number"
-            name="down_payment"
-            id="dp"
-            placeholder="np. 1000"
-          />
-          <p>&nbsp;zł</p>
-        </div>
-        <div class="form-row">
-          <label for="regular-payment">Kwota regularnej wpłaty: </label>
-          <input
-            type="number"
-            name="regular-payment"
-            id="rp"
-            placeholder="np. 300"
-          />
-          <p>&nbsp;zł</p>
-        </div>
-        <div class="form-row">
-          <label for="payment-period">Co ile?</label>
-          <select name="payment-period" id="payment-period">
-            <option value="12">Miesięcznie</option>
-            <option value="4">Kwartalnie</option>
-            <option value="1">Rocznie</option>
-          </select>
-          <p>&nbsp;</p>
-        </div>
-        <br /><br /> <br />
-
-        <input type="radio" id="pp-monthly" name="payment-monthly" value="12" />
-        <label for="html">Miesięcznie</label><br />
-        <input
-          type="radio"
-          id="pp-quarterly"
-          name="payment-quarterly"
-          value="4"
-        />
-        <label for="css">Kwartalnie</label><br />
-        <input
-          type="radio"
-          id="pp-annually"
-          name="payment-annually"
-          value="1"
-        />
-        <label for="javascript">Rocznie</label>
-
-        <br /><br />
-
-        <label for="cars">Name</label>
-
-        <select id="cars">
-          <option value="volvo">Volvo</option>
-          <option value="saab">Saab</option>
-          <option value="opel">Opel</option>
-          <option value="audi">Audi</option>
-        </select>
-
-        <input type="radio" id="pp-monthly" name="payment-monthly" value="12" />
-        <label for="html">Miesięcznie</label><br />
-        <input
-          type="radio"
-          id="pp-quarterly"
-          name="payment-quarterly"
-          value="4"
-        />
-        <label for="css">Kwartalnie</label><br />
-        <input
-          type="radio"
-          id="pp-annually"
-          name="payment-annually"
-          value="1"
-        />
-        <label for="javascript">Rocznie</label>
-      </div>
-    </section>
-
-    <script>
-      let kwotaPocz = 0;
-      let kwotaReg = 300;
-
-      let procentDyw = 0.01;
-
-      let okres = 12;
-      let kapitalizacja = 1;
-
-      let dywidenda;
-
-      for (i=0; i<=okres; i++) {
-        for (j=0; j<=kapitalizacja; j==) {
-          let dywidenda = kwotaPocz + (kwotaReg*okres) + (kwotaReg*procentDyw)*okres;
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
         }
-      }
-
-      console.log("control log");
-      
-      let dividend_value = false;
-
-      for(i=0; i<= 1; i++){
-        if(dividend_value == true) {
-          console.log("true")
-        } else {
-          console.log("false")
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
         }
-      }
+        th {
+            background-color: #f2f2f2;
+        }
+        .highlight-period, .highlight-percent, .highlight-amount, .highlight-return {
+            font-weight: bold;
+            color: #2a9d8f;
+        }
+        #resultsContainer {
+            display: none;
+            margin-top: 20px;
+        }
+        #toggleButton {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #2a9d8f;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
 
-    </script>
+<h1>Kalkulator Inwestycji i Dywidend</h1>
 
-  </body>
+<div>
+    <label for="kwota_start">Kwota początkowa (zł):</label>
+    <input type="number" id="kwota_start" step="0.01">
+
+    <label for="kwota">Systematyczna kwota (zł):</label>
+    <input type="number" id="kwota" step="0.01">
+
+    <label for="czestotliwosc_wplat">Częstotliwość wpłat:</label>
+    <select id="czestotliwosc_wplat">
+        <option value="miesiecznie">Miesięcznie</option>
+        <option value="kwartalnie">Kwartalnie</option>
+        <option value="rocznie">Rocznie</option>
+    </select>
+
+    <label for="oproc">Oprocentowanie (%):</label>
+    <input type="number" id="oproc" step="0.01">
+
+    <label for="kap_typ">Kapitalizacja:</label>
+    <select id="kap_typ">
+        <option value="1">Dzienna</option>
+        <option value="2">Miesięczna</option>
+        <option value="3">Kwartalna</option>
+        <option value="4">Roczna</option>
+    </select>
+
+    <label for="okres">Okres (lata):</label>
+    <input type="number" id="okres">
+</div>
+
+<button onclick="generateTable()">Oblicz</button>
+<button id="toggleButton" onclick="toggleResults()">Pokaż wyniki</button>
+
+<div id="resultsContainer">
+    <h2>Podsumowanie inwestycji</h2>
+    <div id="summary"></div>
+
+    <h3>Szczegóły inwestycji</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Okres</th>
+                <th>Wpłata</th>
+                <th>Kwota pracująca</th>
+                <th>Oprocentowanie</th>
+                <th>Odsetki</th>
+                <th>Całkowita kwota</th>
+            </tr>
+        </thead>
+        <tbody id="resultBody"></tbody>
+    </table>
+
+    <h3>Łączne wartości</h3>
+    <p>Łączne wpłaty: <span id="sumWpłaty"></span></p>
+    <p>Łączne odsetki: <span id="sumOdsetki"></span></p>
+    <p>Łączna kwota pracująca: <span id="sumKwotaPracująca"></span></p>
+</div>
+
+<script>
+    // Wklej tutaj cały skrypt JavaScript z pytania
+</script>
+
+</body>
 </html>
