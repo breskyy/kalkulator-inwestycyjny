@@ -143,3 +143,25 @@ for (let i = 1; i <= 30; i++) {
         console.log(`Portfel dywidend: ${portfel_dywidend.toFixed(2)} zł`);
     }
 }
+
+// balance = 
+
+// const capitalization = 'monthly';
+// switch (capitalization) {
+//   case 'monthly':
+//     balance += regIncome * divYield;
+//     break;
+//   case 'quartarly':
+//     for(i=0; i<3; i++) {
+//         balance += regIncome * divYield;
+//     }
+//   case 'annualy':
+//     for(i=0; i<12; i++) {
+//         balance += regIncome * divYield;
+//     }
+//     console.log('Mangoes and papayas are $2.79 a pound.');
+//     // Expected output: "Mangoes and papayas are $2.79 a pound."
+//     break;
+//   default:
+//     console.log(`Fault with choosing: ${capitalization}.`);
+// }
