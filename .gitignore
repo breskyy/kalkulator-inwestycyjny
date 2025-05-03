@@ -1,0 +1,52 @@
+# Pliki systemowe
+.DS_Store
+Thumbs.db
+.Spotlight-V100
+.Trashes
+
+# Pliki środowiskowe i konfiguracyjne
+.env
+.env.local
+config.js
+config.local.js
+connection.php
+
+# Pliki baz danych
+*.db
+*.sqlite
+*.sqlite3
+db/data.json
+db/config.json
+
+# Pliki tymczasowe i kopie zapasowe
+*.log
+*.tmp
+*.swp
+*.bak
+.cache/
+
+# Pliki IDE
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Jeśli używasz npm/yarn
+node_modules/
+package-lock.json
+yarn.lock
+dist/
+build/
+
+# Ignoruj pliki z hasłami i kluczami
+**/credentials.*
+**/secrets.*
+*api_key*
+
+# Ignoruj skompilowane pliki JS (jeśli używasz TypeScript lub Babel)
+*.min.js
+*.bundle.js
+
+# Inne
+*.zip
+*.tar.gz
