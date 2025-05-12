@@ -47,6 +47,9 @@ build/
 *.min.js
 *.bundle.js
 
+# Folder base-code
+/base-code/
+
 # Inne
 *.zip
 *.tar.gz
