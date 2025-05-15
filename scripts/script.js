@@ -6,6 +6,12 @@ function generateTable() {
     const kapitalizacja = parseInt(document.getElementById('kap_typ').value);
     const okres = parseInt(document.getElementById('okres').value);
 
+    // Dywidendy
+    const dywidendaRoczna = parseFloat(document.getElementById('dywidenda').value) / 100;
+    const dywCzest = document.getElementById('dyw_czest').value;
+    const dywWzrost = parseFloat(document.getElementById('dyw_wzrost').value) / 100;
+    const reinwestujDywidende = document.getElementById('reinwestuj_dywidende').checked;
+
     // Ustal co ile miesięcy jest kapitalizacja
     let miesiecyKapitalizacji;
     switch (kapitalizacja) {
@@ -41,18 +47,40 @@ function generateTable() {
             miesiecyWplaty = 1;
     }
 
+    // Ustal co ile miesięcy jest wypłata dywidendy
+    let miesiecyDywidendy;
+    switch (dywCzest) {
+        case 'miesiecznie':
+            miesiecyDywidendy = 1;
+            break;
+        case 'kwartalnie':
+            miesiecyDywidendy = 3;
+            break;
+        case 'rocznie':
+            miesiecyDywidendy = 12;
+            break;
+        default:
+            miesiecyDywidendy = 1;
+    }
+
     let resultBody = document.getElementById('resultBody');
     resultBody.innerHTML = '';
 
     let sumaKwotaPracujaca = kwotaStart;
     let calkowiteOdsetki = 0;
     let sumaWplat = kwotaStart;
+    let sumaDywidend = 0;
+    let sumaReinwestowanychDywidend = 0;
+    let aktualnaStopaDywidendy = dywidendaRoczna;
 
     for (let m = 1; m <= okres * 12; m++) {
         let okresWyswietlany = `Miesiąc ${m}`;
         let kwotaPrzed = sumaKwotaPracujaca;
         let wplata = 0;
         let odsetki = 0;
+        let dywidenda = 0;
+        let dywidendaReinwestowana = 0;
+        let dywidendaWypłacona = 0;
 
         // Dodaj wpłatę jeśli to miesiąc wpłaty
         if ((m - 1) % miesiecyWplaty === 0) {
@@ -63,11 +91,29 @@ function generateTable() {
 
         // Naliczenie odsetek tylko w miesiącach kapitalizacji
         if (m % miesiecyKapitalizacji === 0) {
-            // liczba kapitalizacji w roku
             let liczbaKapitalizacjiWRoku = 12 / miesiecyKapitalizacji;
             odsetki = sumaKwotaPracujaca * (oprocentowanie / liczbaKapitalizacjiWRoku);
             sumaKwotaPracujaca += odsetki;
             calkowiteOdsetki += odsetki;
+        }
+
+        // Naliczenie dywidendy tylko w miesiącach wypłaty dywidendy
+        if (m % miesiecyDywidendy === 0) {
+            let liczbaDywidendWRoku = 12 / miesiecyDywidendy;
+            dywidenda = kwotaPrzed * (aktualnaStopaDywidendy / liczbaDywidendWRoku);
+            sumaDywidend += dywidenda;
+            if (reinwestujDywidende) {
+                sumaKwotaPracujaca += dywidenda;
+                sumaReinwestowanychDywidend += dywidenda;
+                dywidendaReinwestowana = dywidenda;
+            } else {
+                dywidendaWypłacona = dywidenda;
+            }
+        }
+
+        // Wzrost dywidendy co rok
+        if (m % 12 === 0 && dywWzrost > 0) {
+            aktualnaStopaDywidendy *= (1 + dywWzrost);
         }
 
         let row = document.createElement('tr');
@@ -78,12 +124,17 @@ function generateTable() {
             <td>${(oprocentowanie * 100).toFixed(2)}%</td>
             <td>${odsetki ? odsetki.toFixed(2) + ' zł' : '0 zł'}</td>
             <td>${sumaKwotaPracujaca.toFixed(2)} zł</td>
+            <td>${dywidenda ? dywidenda.toFixed(2) + ' zł' : '0 zł'}</td>
+            <td>${dywidendaReinwestowana ? dywidendaReinwestowana.toFixed(2) + ' zł' : '0 zł'}</td>
+            <td>${dywidendaWypłacona ? dywidendaWypłacona.toFixed(2) + ' zł' : '0 zł'}</td>
         `;
         resultBody.appendChild(row);
     }
 
     let roi = ((sumaKwotaPracujaca - sumaWplat) / sumaWplat) * 100;
     let cagr = (Math.pow(sumaKwotaPracujaca / sumaWplat, 1 / okres) - 1) * 100;
+    let yieldOnCost = (sumaDywidend / sumaWplat) * 100;
+    let cagrDywidendy = (Math.pow((sumaReinwestowanychDywidend + sumaKwotaPracujaca) / sumaWplat, 1 / okres) - 1) * 100;
 
     document.getElementById('sumWpłaty').innerText = `${sumaWplat.toFixed(2)} zł`;
     document.getElementById('sumOdsetki').innerText = `${calkowiteOdsetki.toFixed(2)} zł`;
@@ -92,12 +143,16 @@ function generateTable() {
     document.getElementById('summary').innerHTML = `
         Po <span class="highlight-period">${okres} latach</span>, przy oprocentowaniu 
         <span class="highlight-percent">${(oprocentowanie * 100).toFixed(2)}%</span> 
-        i kapitalizacji <span class="highlight-period">${12 / miesiecyKapitalizacji} razy w roku</span>, 
-        wpłacone będziesz mieć: <span class="highlight-amount">${sumaWplat.toFixed(2)} zł</span>, 
-        uzbierasz: <span class="highlight-amount">${sumaKwotaPracujaca.toFixed(2)} zł</span>, 
+        i kapitalizacji <span class="highlight-period">${12 / miesiecyKapitalizacji} razy w roku</span>,<br>
+        wpłacone będziesz mieć: <span class="highlight-amount">${sumaWplat.toFixed(2)} zł</span>,<br>
+        uzbierasz: <span class="highlight-amount">${sumaKwotaPracujaca.toFixed(2)} zł</span>,<br>
         z czego odsetki wyniosą <span class="highlight-amount">${calkowiteOdsetki.toFixed(2)} zł</span>.<br>
+        Łączna suma wypłaconych dywidend: <span class="highlight-amount">${(sumaDywidend - sumaReinwestowanychDywidend).toFixed(2)} zł</span>.<br>
+        Łączna suma reinwestowanych dywidend: <span class="highlight-amount">${sumaReinwestowanychDywidend.toFixed(2)} zł</span>.<br>
+        Yield on Cost (dywidendy / wpłaty): <span class="highlight-return">${yieldOnCost.toFixed(2)}%</span>.<br>
         Łączny procent zwrotu z inwestycji (ROI): <span class="highlight-return">${roi.toFixed(2)}%</span>.<br>
-        Średnioroczny procent składany (CAGR): <span class="highlight-return">${cagr.toFixed(2)}%</span>.
+        Średnioroczny procent składany (CAGR): <span class="highlight-return">${cagr.toFixed(2)}%</span>.<br>
+        CAGR z reinwestowanych dywidend: <span class="highlight-return">${cagrDywidendy.toFixed(2)}%</span>.
     `;
 
     document.getElementById('resultsContainer').style.display = 'block';

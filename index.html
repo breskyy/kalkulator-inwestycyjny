@@ -59,6 +59,24 @@
     <label for="oproc">Oprocentowanie (%):</label>
     <input type="number" id="oproc" step="0.01" value="5">
 
+    <label for="dywidenda">Roczna stopa dywidendy (%):</label>
+    <input type="number" id="dywidenda" step="0.01" value="4">
+
+    <label for="dyw_czest">Częstotliwość wypłaty dywidendy:</label>
+    <select id="dyw_czest">
+        <option value="miesiecznie">Miesięcznie</option>
+        <option value="kwartalnie">Kwartalnie</option>
+        <option value="rocznie">Rocznie</option>
+    </select>
+
+    <label for="dyw_wzrost">Roczny wzrost dywidendy (%):</label>
+    <input type="number" id="dyw_wzrost" step="0.01" value="0">
+
+    <label for="reinwestuj_dywidende">
+        <input type="checkbox" id="reinwestuj_dywidende" checked>
+        Reinwestuj dywidendy
+    </label>
+
     <label for="kap_typ">Kapitalizacja:</label>
     <select id="kap_typ">
         <option value="1">Dzienna</option>
@@ -88,6 +106,9 @@
                 <th>Oprocentowanie</th>
                 <th>Odsetki</th>
                 <th>Całkowita kwota</th>
+                <th>Dywidenda</th>
+                <th>Reinwestowana dywidenda</th>
+                <th>Wypłacona dywidenda</th>
             </tr>
         </thead>
         <tbody id="resultBody"></tbody>
