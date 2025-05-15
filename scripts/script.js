@@ -83,6 +83,7 @@ function generateTable() {
     }
 
     let roi = ((sumaKwotaPracujaca - sumaWplat) / sumaWplat) * 100;
+    let cagr = (Math.pow(sumaKwotaPracujaca / sumaWplat, 1 / okres) - 1) * 100;
 
     document.getElementById('sumWpłaty').innerText = `${sumaWplat.toFixed(2)} zł`;
     document.getElementById('sumOdsetki').innerText = `${calkowiteOdsetki.toFixed(2)} zł`;
@@ -94,8 +95,9 @@ function generateTable() {
         i kapitalizacji <span class="highlight-period">${12 / miesiecyKapitalizacji} razy w roku</span>, 
         wpłacone będziesz mieć: <span class="highlight-amount">${sumaWplat.toFixed(2)} zł</span>, 
         uzbierasz: <span class="highlight-amount">${sumaKwotaPracujaca.toFixed(2)} zł</span>, 
-        z czego odsetki wyniosą <span class="highlight-amount">${calkowiteOdsetki.toFixed(2)} zł</span>.
-        Łączny procent zwrotu z inwestycji wyniesie: <span class="highlight-return">${roi.toFixed(2)}%</span>.
+        z czego odsetki wyniosą <span class="highlight-amount">${calkowiteOdsetki.toFixed(2)} zł</span>.<br>
+        Łączny procent zwrotu z inwestycji (ROI): <span class="highlight-return">${roi.toFixed(2)}%</span>.<br>
+        Średnioroczny procent składany (CAGR): <span class="highlight-return">${cagr.toFixed(2)}%</span>.
     `;
 
     document.getElementById('resultsContainer').style.display = 'block';
