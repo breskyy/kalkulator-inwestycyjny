@@ -44,10 +44,10 @@
 
 <div>
     <label for="kwota_start">Kwota początkowa (zł):</label>
-    <input type="number" id="kwota_start" step="0.01">
+    <input type="number" id="kwota_start" step="0.01" value="1000">
 
-    <label for="kwota">Systematyczna kwota (zł):</label>
-    <input type="number" id="kwota" step="0.01">
+    <label for="kwota">Systematyczna kwota odkładana (zł):</label>
+    <input type="number" id="kwota" step="0.01" value="300">
 
     <label for="czestotliwosc_wplat">Częstotliwość wpłat:</label>
     <select id="czestotliwosc_wplat">
@@ -57,7 +57,7 @@
     </select>
 
     <label for="oproc">Oprocentowanie (%):</label>
-    <input type="number" id="oproc" step="0.01">
+    <input type="number" id="oproc" step="0.01" value="5">
 
     <label for="kap_typ">Kapitalizacja:</label>
     <select id="kap_typ">
@@ -68,7 +68,7 @@
     </select>
 
     <label for="okres">Okres (lata):</label>
-    <input type="number" id="okres">
+    <input type="number" id="okres" value="10">
 </div>
 
 <button onclick="generateTable()">Oblicz</button>

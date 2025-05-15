@@ -6,44 +6,39 @@ function generateTable() {
     const kapitalizacja = parseInt(document.getElementById('kap_typ').value);
     const okres = parseInt(document.getElementById('okres').value);
 
-    let liczbaKapitalizacji;
-    let jednostkaOkresu;
-
+    // Ustal co ile miesięcy jest kapitalizacja
+    let miesiecyKapitalizacji;
     switch (kapitalizacja) {
-        case 1:
-            liczbaKapitalizacji = 365;
-            jednostkaOkresu = "Dzień";
+        case 1: // Dzienna
+            miesiecyKapitalizacji = 1; // uproszczenie: traktujemy jak miesięczna
             break;
-        case 2:
-            liczbaKapitalizacji = 12;
-            jednostkaOkresu = "Miesiąc";
+        case 2: // Miesięczna
+            miesiecyKapitalizacji = 1;
             break;
-        case 3:
-            liczbaKapitalizacji = 4;
-            jednostkaOkresu = "Kwartał";
+        case 3: // Kwartalna
+            miesiecyKapitalizacji = 3;
             break;
-        case 4:
-            liczbaKapitalizacji = 1;
-            jednostkaOkresu = "Rok";
+        case 4: // Roczna
+            miesiecyKapitalizacji = 12;
             break;
         default:
-            liczbaKapitalizacji = 12;
-            jednostkaOkresu = "Miesiąc";
+            miesiecyKapitalizacji = 1;
     }
 
-    let liczbaWplat;
+    // Ustal co ile miesięcy jest wpłata
+    let miesiecyWplaty;
     switch (czestotliwoscWplat) {
         case 'miesiecznie':
-            liczbaWplat = 12;
+            miesiecyWplaty = 1;
             break;
         case 'kwartalnie':
-            liczbaWplat = 4;
+            miesiecyWplaty = 3;
             break;
         case 'rocznie':
-            liczbaWplat = 1;
+            miesiecyWplaty = 12;
             break;
         default:
-            liczbaWplat = 12;
+            miesiecyWplaty = 1;
     }
 
     let resultBody = document.getElementById('resultBody');
@@ -52,54 +47,53 @@ function generateTable() {
     let sumaKwotaPracujaca = kwotaStart;
     let calkowiteOdsetki = 0;
     let sumaWplat = kwotaStart;
-    let ostatniaKwotaPracujaca = kwotaStart;
 
-    for (let i = 1; i <= okres * liczbaKapitalizacji; i++) {
-        let okresWyswietlany;
+    for (let m = 1; m <= okres * 12; m++) {
+        let okresWyswietlany = `Miesiąc ${m}`;
+        let kwotaPrzed = sumaKwotaPracujaca;
+        let wplata = 0;
+        let odsetki = 0;
 
-        if (liczbaKapitalizacji >= 12 && liczbaWplat >= 12) {
-            okresWyswietlany = `Miesiąc ${i}`;
-        } else if (liczbaKapitalizacji >= 4 && liczbaWplat >= 4) {
-            okresWyswietlany = `Kwartał ${Math.ceil(i / (12 / liczbaWplat))}`;
-        } else {
-            okresWyswietlany = `Rok ${Math.ceil(i / liczbaKapitalizacji)}`;
-        }
-
-        let odsetki = sumaKwotaPracujaca * (oprocentowanie / liczbaKapitalizacji);
-        calkowiteOdsetki += odsetki;
-        sumaKwotaPracujaca += odsetki;
-
-        if (i % (liczbaKapitalizacji / liczbaWplat) === 0) {
+        // Dodaj wpłatę jeśli to miesiąc wpłaty
+        if ((m - 1) % miesiecyWplaty === 0) {
             sumaKwotaPracujaca += systematycznaKwota;
             sumaWplat += systematycznaKwota;
+            wplata = systematycznaKwota;
         }
 
-        ostatniaKwotaPracujaca = sumaKwotaPracujaca;
+        // Naliczenie odsetek tylko w miesiącach kapitalizacji
+        if (m % miesiecyKapitalizacji === 0) {
+            // liczba kapitalizacji w roku
+            let liczbaKapitalizacjiWRoku = 12 / miesiecyKapitalizacji;
+            odsetki = sumaKwotaPracujaca * (oprocentowanie / liczbaKapitalizacjiWRoku);
+            sumaKwotaPracujaca += odsetki;
+            calkowiteOdsetki += odsetki;
+        }
 
         let row = document.createElement('tr');
         row.innerHTML = `
             <td>${okresWyswietlany}</td>
-            <td>${i % (liczbaKapitalizacji / liczbaWplat) === 0 ? `${systematycznaKwota.toFixed(2)} zł` : '0 zł'}</td>
-            <td>${ostatniaKwotaPracujaca.toFixed(2)} zł</td>
+            <td>${wplata ? wplata.toFixed(2) + ' zł' : '0 zł'}</td>
+            <td>${kwotaPrzed.toFixed(2)} zł</td>
             <td>${(oprocentowanie * 100).toFixed(2)}%</td>
-            <td>${odsetki.toFixed(2)} zł</td>
+            <td>${odsetki ? odsetki.toFixed(2) + ' zł' : '0 zł'}</td>
             <td>${sumaKwotaPracujaca.toFixed(2)} zł</td>
         `;
         resultBody.appendChild(row);
     }
 
-    let roi = (calkowiteOdsetki / sumaWplat) * 100;
+    let roi = ((sumaKwotaPracujaca - sumaWplat) / sumaWplat) * 100;
 
     document.getElementById('sumWpłaty').innerText = `${sumaWplat.toFixed(2)} zł`;
     document.getElementById('sumOdsetki').innerText = `${calkowiteOdsetki.toFixed(2)} zł`;
-    document.getElementById('sumKwotaPracująca').innerText = `${ostatniaKwotaPracujaca.toFixed(2)} zł`;
+    document.getElementById('sumKwotaPracująca').innerText = `${sumaKwotaPracujaca.toFixed(2)} zł`;
 
     document.getElementById('summary').innerHTML = `
         Po <span class="highlight-period">${okres} latach</span>, przy oprocentowaniu 
         <span class="highlight-percent">${(oprocentowanie * 100).toFixed(2)}%</span> 
-        i kapitalizacji <span class="highlight-period">${liczbaKapitalizacji} razy w roku</span>, 
+        i kapitalizacji <span class="highlight-period">${12 / miesiecyKapitalizacji} razy w roku</span>, 
         wpłacone będziesz mieć: <span class="highlight-amount">${sumaWplat.toFixed(2)} zł</span>, 
-        uzbierasz: <span class="highlight-amount">${ostatniaKwotaPracujaca.toFixed(2)} zł</span>, 
+        uzbierasz: <span class="highlight-amount">${sumaKwotaPracujaca.toFixed(2)} zł</span>, 
         z czego odsetki wyniosą <span class="highlight-amount">${calkowiteOdsetki.toFixed(2)} zł</span>.
         Łączny procent zwrotu z inwestycji wyniesie: <span class="highlight-return">${roi.toFixed(2)}%</span>.
     `;
